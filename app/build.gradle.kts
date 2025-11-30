@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.menna.myapplication"
+    namespace = "com.menna.popcorntime"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.menna.myapplication"
+        applicationId = "com.menna.popcorntime"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -49,11 +49,30 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.room.runtime.android)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.serialization.json)
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation (libs.okhttp)
+    implementation(libs.hilt.android)
+    androidTestImplementation(libs.room.testing)
+    androidTestImplementation(libs.runner)
+    androidTestImplementation(libs.core.testing)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.truth)
+    implementation(libs.dagger)
+    implementation(libs.coroutines.core)
+    implementation(libs.hilt.android)
+    implementation(libs.bundles.datastore)
+    implementation("cafe.adriel.voyager:voyager-navigator:1.1.0-beta02")
 }
