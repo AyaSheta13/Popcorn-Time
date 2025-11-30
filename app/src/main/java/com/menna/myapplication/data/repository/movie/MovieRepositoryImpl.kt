@@ -1,0 +1,306 @@
+package com.popcorntime.repository.movie
+
+import com.popcorntime.domain.model.RatingResult
+import com.popcorntime.domain.model.SortType
+import com.popcorntime.domain.repository.LanguageRepository
+import com.popcorntime.domain.repository.MoviesRepository
+import com.popcorntime.entity.Genre
+import com.popcorntime.entity.Movie
+import com.popcorntime.entity.Review
+import com.popcorntime.repository.movie.data_source.local.MoviesLocalDataSource
+import com.popcorntime.repository.movie.data_source.local.toCacheCodeWithMoviesCacheDto
+import com.popcorntime.repository.movie.data_source.local.toCacheDtoList
+import com.popcorntime.repository.movie.data_source.local.toEntityList
+import com.popcorntime.repository.movie.data_source.remote.MoviesRemoteDataSource
+import com.popcorntime.repository.movie.data_source.remote.dto.MovieRemoteDto
+import com.popcorntime.repository.movie.data_source.remote.toEntity
+import com.popcorntime.repository.utils.mappers.tryToCall
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfAllMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfFreeToWatchMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfMoreRecommendedMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfMovie
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfMovieReviews
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfMoviesByCategory
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfMoviesOfArtist
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfNowPlayingMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfPersonalizedMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfPopularMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfSimilarMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfSuggestedMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfTopRatedMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfTrendingMovies
+import com.popcorntime.repository.utils.sharedDto.local.getCacheCodeOfUpcomingMovies
+import com.popcorntime.repository.utils.sharedDto.local.toCacheCodeWithReviewsCacheDto
+import com.popcorntime.repository.utils.sharedDto.local.toEntityList
+import java.util.Date
+import javax.inject.Inject
+
+class MovieRepositoryImpl @Inject constructor(
+    private val moviesRemoteDataSource: MoviesRemoteDataSource,
+    private val moviesLocalDataSource: MoviesLocalDataSource,
+    private val languageRepository: LanguageRepository
+) : MoviesRepository {
+
+
+    override suspend fun getSimilarMovies(movieId: Long, page: Int): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getSimilarMovies(movieId, page) },
+            cacheCode = getCacheCodeOfSimilarMovies(
+                movieId,
+                page,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getPersonalizedMovies(page: Int): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getPersonalizedMovies(page) },
+            cacheCode = getCacheCodeOfPersonalizedMovies(
+                page,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getSuggestedMovies(): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getSuggestedMovies() },
+            cacheCode = getCacheCodeOfSuggestedMovies(
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getTopRatingMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getTopRatingMovies(page, genreId) },
+            cacheCode = getCacheCodeOfTopRatedMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getUpcomingMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getUpcomingMovies(page, genreId) },
+            cacheCode = getCacheCodeOfUpcomingMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getNowPlayingMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getNowPlayingMovies(page, genreId) },
+            cacheCode = getCacheCodeOfNowPlayingMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getTrendingMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getTrendingMovies(page, genreId) },
+            cacheCode = getCacheCodeOfTrendingMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getMoreRecommendedMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getMoreRecommendedMovies(page, genreId) },
+            cacheCode = getCacheCodeOfMoreRecommendedMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getFreeToWatchMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getFreeToWatchMovies(page, genreId) },
+            cacheCode = getCacheCodeOfFreeToWatchMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getMoviesByCategory(page: Int, genreId: Long): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getMoviesByCategory(genreId, page) },
+            cacheCode = getCacheCodeOfMoviesByCategory(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getPopularMovies(page: Int, genreId: Long?): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getPopularMovies(page, genreId) },
+            cacheCode = getCacheCodeOfPopularMovies(
+                page, genreId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getAllMovies(
+        page: Int,
+        genreId: Long?,
+        sortType: SortType?
+    ): List<Movie> {
+        return getMovies(
+            remoteFetcher = {
+                moviesRemoteDataSource.getAllMovies(
+                    page,
+                    genreId,
+                    sortType?.sortBy
+                )
+            },
+            cacheCode = getCacheCodeOfAllMovies(
+                page, genreId, sortType,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    override suspend fun getMoviesByQuery(query: String, page: Int): List<Movie> {
+        return tryToCall {
+            val genres = moviesRemoteDataSource.getMoviesGenres().map { it.toEntity() }
+            moviesRemoteDataSource.getMoviesByQuery(query, page)
+                .map { it.toEntity(genres) }
+        }
+    }
+
+    override suspend fun getMoviesOfArtist(artistId: Long): List<Movie> {
+        return getMovies(
+            remoteFetcher = { moviesRemoteDataSource.getMoviesOfArtist(artistId) },
+            cacheCode = getCacheCodeOfMoviesOfArtist(
+                artistId,
+                language = languageRepository.getLanguage()
+            )
+        )
+    }
+
+    private suspend fun getMovies(
+        remoteFetcher: suspend () -> List<MovieRemoteDto>,
+        cacheCode: String
+    ): List<Movie> {
+        moviesLocalDataSource.deleteExpiredCache(Date().time - CACHE_EXPIRATION_MILLIS)
+        return moviesLocalDataSource.getMoviesByCacheCode(cacheCode = cacheCode)
+            .toEntityList()
+            .takeIf { it.isNotEmpty() }
+            ?: tryToCall {
+                val genres = moviesRemoteDataSource.getMoviesGenres().map { it.toEntity() }
+                remoteFetcher()
+                    .map { it.toEntity(genres) }
+                    .also { movies ->
+                        moviesLocalDataSource.insertCacheCodeWithMovies(
+                            movies.toCacheCodeWithMoviesCacheDto(
+                                request = cacheCode,
+                                language = languageRepository.getLanguage()
+                            )
+                        )
+                    }
+            }
+    }
+
+    override suspend fun getMovieById(id: Long): Movie {
+        moviesLocalDataSource.deleteExpiredCache(Date().time - CACHE_EXPIRATION_MILLIS)
+        return moviesLocalDataSource
+            .getMoviesByCacheCode(
+                cacheCode = getCacheCodeOfMovie(
+                    id,
+                    language = languageRepository.getLanguage()
+                )
+            )
+            .toEntityList()
+            .firstOrNull()
+            ?: tryToCall {
+                moviesRemoteDataSource.getMovieById(id).toEntity(
+                    moviesRemoteDataSource.getVideoKey(id)
+                )
+            }.also { movie ->
+                moviesLocalDataSource.insertCacheCodeWithMovies(
+                    listOf(movie).toCacheCodeWithMoviesCacheDto(
+                        request = getCacheCodeOfMovie(
+                            id,
+                            language = languageRepository.getLanguage()
+                        ),
+                        language = languageRepository.getLanguage()
+                    )
+                )
+            }
+    }
+
+    override suspend fun getMovieReviews(movieId: Long, page: Int): List<Review> {
+        return moviesLocalDataSource
+            .getMovieReviewsByCacheCode(
+                getCacheCodeOfMovieReviews(
+                    page, movieId,
+                    language = languageRepository.getLanguage()
+                )
+            )
+            .toEntityList()
+            .takeIf { it.isNotEmpty() }
+            ?: tryToCall {
+                moviesRemoteDataSource.getMovieReviews(movieId, page).map { it.toEntity() }
+            }.also {
+                moviesLocalDataSource.insertCacheCodeWithReviews(
+                    it.toCacheCodeWithReviewsCacheDto(
+                        getCacheCodeOfMovieReviews(
+                            page, movieId,
+                            language = languageRepository.getLanguage()
+                        ),
+                        languageRepository.getLanguage()
+                    )
+                )
+            }
+    }
+
+    override suspend fun getMoviesGenres(): List<Genre> {
+        return moviesLocalDataSource
+            .getMovieGenresByLanguage(language = languageRepository.getLanguage())
+            .toEntityList()
+            .takeIf { it.isNotEmpty() }
+            ?: tryToCall {
+                moviesRemoteDataSource.getMoviesGenres()
+                    .map { it.toEntity() }
+                    .also {
+                        moviesLocalDataSource.insertMovieGenres(
+                            it.toCacheDtoList(
+                                language = languageRepository.getLanguage()
+                            )
+                        )
+                    }
+            }
+    }
+
+    override suspend fun addMovieRating(movieId: Long, rating: Float): RatingResult {
+        return tryToCall {
+            val response = moviesRemoteDataSource.addMovieRating(movieId, rating)
+            RatingResult(
+                statusCode = response.statusCode,
+                statusMessage = response.statusMessage
+            )
+        }
+    }
+
+    override suspend fun deleteMovieRating(movieId: Long) {
+        return tryToCall {
+            moviesRemoteDataSource.deleteMovieRating(movieId)
+        }
+    }
+
+    private companion object {
+        private const val CACHE_EXPIRATION_MILLIS = 86_400_000
+    }
+}
