@@ -1,0 +1,49 @@
+package com.menna.myapplication.domain.repository
+
+import com.menna.myapplication.domain.entity.Episode
+import com.menna.myapplication.domain.entity.Genre
+import com.menna.myapplication.domain.entity.Review
+import com.menna.myapplication.domain.entity.Season
+import com.menna.myapplication.domain.entity.Series
+import com.menna.myapplication.domain.model.RatingResult
+import com.menna.myapplication.domain.model.SortType
+
+interface SeriesRepository {
+    suspend fun getSeriesById(id: Long): Series
+
+    suspend fun getSeriesReviews(seriesId: Long, page: Int): List<Review>
+
+    suspend fun getSeriesSeasons(seriesId: Long): List<Season>
+
+    suspend fun getEpisodes(seriesId: Long, seasonNumber: Int): List<Episode>
+
+    suspend fun getSimilarSeries(seriesId: Long, page: Int): List<Series>
+
+    suspend fun getSeriesOfArtist(artistId: Long): List<Series>
+
+    suspend fun getTopRatingSeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getMoreRecommendedSeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getOnTvSeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getAiringTodaySeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getTrendingSeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getFreeToWatchSeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getSeriesByCategory(genreId: Long, page: Int): List<Series>
+
+    suspend fun getSeriesGenres(): List<Genre>
+
+    suspend fun getPopularSeries(page: Int, genreId: Long?): List<Series>
+
+    suspend fun getAllSeries(page: Int, genreId: Long?, sortType: SortType?): List<Series>
+
+    suspend fun getSeriesByQuery(query: String, page: Int): List<Series>
+
+    suspend fun addSeriesRating(seriesId: Long, rating: Float): RatingResult
+
+    suspend fun deleteSeriesRating(seriesId: Long)
+}
