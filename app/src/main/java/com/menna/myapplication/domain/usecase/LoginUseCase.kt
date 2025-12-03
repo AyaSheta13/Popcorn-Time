@@ -1,5 +1,8 @@
 package com.menna.myapplication.domain.usecase
 
+import com.menna.myapplication.domain.repository.LoginRepository
+import jakarta.inject.Inject
+
 class LoginUseCase @Inject constructor(
     private val loginRepository: LoginRepository
 ) {

@@ -7,6 +7,7 @@ import com.menna.myapplication.domain.repository.ArtistsRepository
 import com.menna.myapplication.domain.repository.MoviesRepository
 import com.menna.myapplication.domain.repository.SearchRepository
 import com.menna.myapplication.domain.repository.SeriesRepository
+import jakarta.inject.Inject
 
 class ManageArtistUseCase @Inject constructor(
     private val artistsRepository: ArtistsRepository,

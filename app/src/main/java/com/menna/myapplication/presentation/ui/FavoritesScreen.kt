@@ -30,6 +30,7 @@ import com.example.popcorntime.data.model.Movie
 import com.example.popcorntime.presentation.ui.MovieDetailsScreen
 import com.example.popcorntime.theme.ThemeManager
 import com.example.popcorntime.ui.theme.orbitronsFontFamily
+import com.menna.myapplication.domain.entity.Movie
 
 class FavoritesScreen : Screen {
     @Composable

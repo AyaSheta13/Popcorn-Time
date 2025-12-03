@@ -1,5 +1,12 @@
 package com.menna.myapplication.domain.usecase
 
+import com.menna.myapplication.domain.entity.Account
+import com.menna.myapplication.domain.entity.MediaList
+import com.menna.myapplication.domain.entity.Movie
+import com.menna.myapplication.domain.entity.Series
+import com.menna.myapplication.domain.repository.AccountRepository
+import jakarta.inject.Inject
+
 class AccountUseCase@Inject constructor(
     private val accountRepository: AccountRepository
 ) {

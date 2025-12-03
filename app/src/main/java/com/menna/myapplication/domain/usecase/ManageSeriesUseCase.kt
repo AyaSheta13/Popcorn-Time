@@ -1,5 +1,18 @@
 package com.menna.myapplication.domain.usecase
 
+import com.menna.myapplication.domain.entity.Artist
+import com.menna.myapplication.domain.entity.Episode
+import com.menna.myapplication.domain.entity.Genre
+import com.menna.myapplication.domain.entity.Review
+import com.menna.myapplication.domain.entity.Season
+import com.menna.myapplication.domain.entity.Series
+import com.menna.myapplication.domain.model.RatingResult
+import com.menna.myapplication.domain.model.SortType
+import com.menna.myapplication.domain.repository.ArtistsRepository
+import com.menna.myapplication.domain.repository.SearchRepository
+import com.menna.myapplication.domain.repository.SeriesRepository
+import jakarta.inject.Inject
+
 class ManageSeriesUseCase @Inject constructor(
     private val seriesRepository: SeriesRepository,
     private val searchRepository: SearchRepository,

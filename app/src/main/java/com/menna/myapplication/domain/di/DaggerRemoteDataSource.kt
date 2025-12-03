@@ -1,6 +1,28 @@
 package com.menna.myapplication.domain.di
 
-
+import com.popcorntime.remote.account.AccountApiService
+import com.popcorntime.remote.account.AccountRemoteDataSourceImpl
+import com.popcorntime.remote.artists.ArtistsApiService
+import com.popcorntime.remote.artists.RemoteArtistDataSourceImpl
+import com.popcorntime.remote.login.LoginApiService
+import com.popcorntime.remote.login.RemoteLoginDataSourceImpl
+import com.popcorntime.remote.movie.MovieApiService
+import com.popcorntime.remote.movie.MoviesRemoteDataSourceImpl
+import com.popcorntime.remote.series.SeriesApiService
+import com.popcorntime.remote.series.SeriesRemoteDataSourceImpl
+import com.popcorntime.remote.utils.retrofit.retrofitProvider
+import com.popcorntime.repository.account.data_source.remote.AccountRemoteDataSource
+import com.popcorntime.repository.artists.data_source.remote.ArtistsRemoteDataSource
+import com.popcorntime.repository.login.data_source.remote.RemoteLoginDataSource
+import com.popcorntime.repository.movie.data_source.remote.MoviesRemoteDataSource
+import com.popcorntime.repository.series.data_source.remote.SeriesRemoteDataSource
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import jakarta.inject.Singleton
+import retrofit2.Retrofit
 
 
 @Module

@@ -1,6 +1,8 @@
 package com.menna.myapplication.domain.usecase
 
 import com.menna.myapplication.domain.repository.GuestRepository
+import jakarta.inject.Inject
+
 
 class ManageGuestUseCase @Inject constructor(
     private val guestRepository: GuestRepository
